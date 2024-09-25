@@ -7,7 +7,7 @@ inputs:
 outputs:
   version:
     description: 'installed autoconf version'
-    value: ${{ steps.install.outputs.version }}
+    value: ${{ steps.execute.outputs.version }}
 
 runs:
   using: 'composite'
@@ -49,6 +49,7 @@ runs:
         # Install Dependencies
         # FIXME: Change to a method that does not use brew
         brew install m4
+        echo "/opt/homebrew/opt/m4/bin" >> "${GITHUB_PATH}"
       if: steps.check.outputs.installed == 'false' && runner.os == 'macos'
     - name: Install autoconf
       shell: bash
@@ -66,12 +67,17 @@ runs:
         key: ${{ runner.os }}-autoconf-${{ steps.resolve.outputs.version }}
       if: steps.check.outputs.installed == 'false'
     - name: autoconf Help
+      id: execute
       shell: bash
       run: |
         # autoconf Help
         echo "::group::📖 autoconf --help"
         autoconf --help 2>&1 || true
         echo "::endgroup::"
+        VERSION=$(autoconf --version | grep 'autoconf' | awk '{print $NF}')
+        echo "autoconf version: ${VERSION}"
+        echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
+
 
 branding:
   icon: 'book'
