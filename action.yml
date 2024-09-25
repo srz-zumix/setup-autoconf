@@ -1,0 +1,84 @@
+name: 'Setup autoconf'
+description: 'This action sets up autoconf'
+inputs:
+  version:
+    description: 'autoconf version. [latest,vX.Y.Z]'
+    default: 'latest'
+outputs:
+  version:
+    description: 'installed autoconf version'
+    value: ${{ steps.execute.outputs.version }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Resolve version
+      shell: bash
+      id: resolve
+      env:
+        INPUTS_VERSION: ${{ inputs.version }}
+      run: |
+        # Resolve version
+        "${GITHUB_ACTION_PATH}/resolve.sh"
+    - uses: actions/cache/restore@v4
+      with:
+        path: |
+          ${{ steps.resolve.outputs.path }}
+        key: ${{ runner.os }}-autoconf-${{ steps.resolve.outputs.version }}
+    - name: Check if autoconf is installed
+      id: check
+      shell: bash
+      env:
+        INPUTS_VERSION: ${{ steps.resolve.outputs.version }}
+      run: |
+        # Check if autoconf is installed
+        "${GITHUB_ACTION_PATH}/check.sh"
+    - name: Download autoconf
+      shell: bash
+      id: download
+      env:
+        INPUTS_VERSION: ${{ steps.resolve.outputs.version }}
+      run: |
+        # Download
+        "${GITHUB_ACTION_PATH}/download.sh"
+      if: steps.check.outputs.installed == 'false'
+    - name: Install Dependencies
+      shell: bash
+      id: dependencies
+      run: |
+        # Install Dependencies
+        # FIXME: Change to a method that does not use brew
+        brew install m4
+        echo "/opt/homebrew/opt/m4/bin" >> "${GITHUB_PATH}"
+      if: steps.check.outputs.installed == 'false' && runner.os == 'macos'
+    - name: Install autoconf
+      shell: bash
+      id: install
+      env:
+        INPUTS_VERSION: ${{ steps.resolve.outputs.version }}
+      run: |
+        # Install
+        "${GITHUB_ACTION_PATH}/install.sh"
+      if: steps.check.outputs.installed == 'false'
+    - uses: actions/cache/save@v4
+      with:
+        path: |
+          ${{ steps.resolve.outputs.path }}
+        key: ${{ runner.os }}-autoconf-${{ steps.resolve.outputs.version }}
+      if: steps.check.outputs.installed == 'false'
+    - name: autoconf Help
+      id: execute
+      shell: bash
+      run: |
+        # autoconf Help
+        echo "::group::📖 autoconf --help"
+        autoconf --help 2>&1 || true
+        echo "::endgroup::"
+        VERSION=$(autoconf --version | grep 'autoconf' | awk '{print $NF}')
+        echo "autoconf version: ${VERSION}"
+        echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
+
+
+branding:
+  icon: 'book'
+  color: 'blue'
