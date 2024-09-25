@@ -7,7 +7,7 @@ mkdir -p "${AUTOCONF_INSTALLDIR}"
 
 install() {
   echo '::group::📖 Installing autoconf ...'
-  cd "${autoconf_TEMPDIR}/autoconf-${VERSION}"
+  cd "${AUTOCONF_TEMPDIR}/autoconf-${VERSION}"
   ./configure --prefix="${AUTOCONF_INSTALLDIR}"
   make -j"$(nproc)"
   make install

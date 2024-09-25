@@ -8,6 +8,6 @@ install autoconf
 steps:
   - uses: srz-zumix/setup-autoconf@v0
     with:
-      version: "1.16.*"
+      version: "2.65.*"
   - run: autoconf --version
 ```

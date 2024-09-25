@@ -3,7 +3,7 @@ set -euo pipefail
 
 source "${GITHUB_ACTION_PATH:-.}/resolve.sh"
 
-mkdir -p "${autoconf_INSTALLDIR}"
+mkdir -p "${AUTOCONF_INSTALLDIR}"
 
 download() {
   echo '::group::📖 Download autoconf ...'
