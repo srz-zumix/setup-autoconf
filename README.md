@@ -1,0 +1,2 @@
+# setup-autoconf
+install autoconf
