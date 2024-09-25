@@ -42,6 +42,14 @@ runs:
         # Download
         "${GITHUB_ACTION_PATH}/download.sh"
       if: steps.check.outputs.installed == 'false'
+    - name: Install Dependencies
+      shell: bash
+      id: dependencies
+      run: |
+        # Install Dependencies
+        # FIXME: Change to a method that does not use brew
+        brew install m4
+      if: steps.check.outputs.installed == 'false' && runner.os == 'macos'
     - name: Install autoconf
       shell: bash
       id: install
