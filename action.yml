@@ -48,7 +48,7 @@ runs:
       run: |
         # Install Dependencies
         # FIXME: Change to a method that does not use brew
-        if ! command -v m4 2>&1 >/dev/null; then
+        if ! command -v m4; then
           brew install m4
           echo "/opt/homebrew/opt/m4/bin" >> "${GITHUB_PATH}"
         fi
