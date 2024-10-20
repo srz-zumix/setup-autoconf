@@ -50,7 +50,7 @@ runs:
         # FIXME: Change to a method that does not use brew
         brew install m4
         echo "/opt/homebrew/opt/m4/bin" >> "${GITHUB_PATH}"
-      if: steps.check.outputs.installed == 'false' && runner.os == 'macos'
+      if: runner.os == 'macos'
     - name: Install autoconf
       shell: bash
       id: install
