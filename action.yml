@@ -48,10 +48,8 @@ runs:
       run: |
         # Install Dependencies
         # FIXME: Change to a method that does not use brew
-        if ! command -v m4; then
-          brew install m4
-          echo "/opt/homebrew/opt/m4/bin" >> "${GITHUB_PATH}"
-        fi
+        brew install m4
+        echo "/opt/homebrew/opt/m4/bin" >> "${GITHUB_PATH}"
       if: runner.os == 'macos'
     - name: Install autoconf
       shell: bash
